@@ -2,67 +2,438 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Enregistreur Audio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collecte de Données Vocales</title>
   <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: #f4f4f4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    :root {
+      --primary-color: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success-color: #16a34a;
+      --danger-color: #dc2626;
+      --warning-color: #d97706;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-600: #4b5563;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --border-radius: 12px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
 
     .container {
-      background: #fff;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
       padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-      text-align: center;
-      width: 300px;
+      width: 100%;
+      max-width: 600px;
+      transition: all 0.3s ease;
+    }
+
+    .container:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
+      color: var(--gray-900);
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 2rem;
+      background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    button {
-      background-color: #4CAF50;
+    h2 {
+      color: var(--gray-800);
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 0.5rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--gray-300);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: var(--gray-100);
+      border-radius: 8px;
+      border: 2px solid transparent;
+      transition: border-color 0.3s ease;
+    }
+
+    .checkbox-group:hover {
+      border-color: var(--gray-300);
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+      transform: scale(1.2);
+    }
+
+    .checkbox-group label {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .btn {
+      background: var(--primary-color);
       color: white;
       border: none;
-      padding: 0.7rem 1.2rem;
+      padding: 0.875rem 1.75rem;
       font-size: 1rem;
+      font-weight: 600;
       border-radius: 8px;
       cursor: pointer;
-      margin: 0.5rem;
-      transition: background-color 0.3s;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
 
-    button:hover {
-      background-color: #45a049;
+    .btn:hover:not(:disabled) {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn:disabled {
+      background: var(--gray-300);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-success {
+      background: var(--success-color);
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background: #15803d;
+    }
+
+    .btn-danger {
+      background: var(--danger-color);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: #b91c1c;
+    }
+
+    .btn-secondary {
+      background: var(--gray-600);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--gray-700);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+
+    .recording-area {
+      text-align: center;
+      padding: 2rem;
+      background: var(--gray-100);
+      border-radius: var(--border-radius);
+      margin: 1.5rem 0;
+    }
+
+    .sentence-display {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-color);
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: var(--gray-800);
+    }
+
+    .progress-bar {
+      background: var(--gray-200);
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, var(--primary-color), #8b5cf6);
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
     }
 
     .status {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: #333;
+      text-align: center;
+      margin: 1rem 0;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .status.success {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .status.error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .status.info {
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #dbeafe;
+    }
+
+    .status.warning {
+      background: #fffbeb;
+      color: #92400e;
+      border: 1px solid #fed7aa;
     }
 
     audio {
-      margin-top: 1rem;
       width: 100%;
+      margin: 1rem 0;
+      border-radius: 8px;
+    }
+
+    .recording-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--danger-color);
+      font-weight: 600;
+    }
+
+    .recording-dot {
+      width: 12px;
+      height: 12px;
+      background: var(--danger-color);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .counter {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .intro-text {
+      color: var(--gray-600);
+      line-height: 1.6;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        padding: 1.5rem;
+        margin: 10px;
+      }
+      
+      .button-group {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Enregistreur Audio</h1>
-    <button id="startBtn">Démarrer</button>
-    <button id="stopBtn" disabled>Arrêter</button>
-    <div class="status" id="status">Appuyez sur "Démarrer"</div>
-    <audio id="audioPlayer" controls style="display: none;"></audio>
+    <!-- Étape 1: Page d'accueil -->
+    <div id="step1" class="step active">
+      <h1>🎤 Collecte de Données Vocales</h1>
+      <div class="intro-text">
+        Vous allez vous enregistrer en lisant des phrases prédéfinies
+        Les enregistrements resteront complètement anonymes et bien entendu contrôlés.
+      </div>
+      <div class="button-group">
+        <button class="btn" onclick="nextStep()">Commencer</button>
+      </div>
+    </div>
+
+    <!-- Étape 2: Informations démographiques -->
+    <div id="step2" class="step">
+      <h2>Informations démographiques</h2>
+      <form id="demographicsForm">
+        <div class="form-group">
+          <label for="age">Âge :</label>
+          <input type="number" id="age" name="age" min="1" max="120" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="gender">Genre :</label>
+          <select id="gender" name="gender" required>
+            <option value="">Sélectionnez...</option>
+            <option value="homme">Homme</option>
+            <option value="femme">Femme</option>
+            <option value="autre">Autre</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="sentenceCount">Nombre de phrases à enregistrer :</label>
+          <select id="sentenceCount" name="sentenceCount">
+            <option value="5">5 phrases</option>
+            <option value="10" selected>10 phrases</option>
+            <option value="15">15 phrases</option>
+            <option value="20">20 phrases</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <div class="checkbox-group">
+            <input type="checkbox" id="consent" name="consent" required>
+            <label for="consent">
+              Je consens à ce que mes enregistrements vocaux soient utilisés. 
+              Je comprends que mes données resteront anonymes et ne seront 
+              pas utilisées à des fins commerciales.
+            </label>
+          </div>
+        </div>
+        
+        <div class="button-group">
+          <button type="button" class="btn btn-secondary" onclick="previousStep()">Retour</button>
+          <button type="submit" class="btn">Continuer</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Étape 3: Enregistrement -->
+    <div id="step3" class="step">
+      <h2>Enregistrement</h2>
+      <div class="counter">
+        Phrase <span id="currentSentence">1</span> sur <span id="totalSentences">10</span>
+      </div>
+      
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+      
+      <div class="sentence-display" id="sentenceDisplay">
+        Chargement des phrases...
+      </div>
+      
+      <div class="recording-area">
+        <div id="recordingStatus" class="status info">
+          Lisez la phrase ci-dessus puis cliquez sur "Enregistrer"
+        </div>
+        
+        <audio id="audioPlayer" controls style="display: none;"></audio>
+        
+        <div class="button-group">
+          <button id="recordBtn" class="btn">🎤 Enregistrer</button>
+          <button id="stopBtn" class="btn btn-danger" disabled>⏹️ Arrêter</button>
+          <button id="playBtn" class="btn btn-secondary" disabled>▶️ Écouter</button>
+          <button id="rerecordBtn" class="btn btn-warning" disabled>🔄 Réenregistrer</button>
+        </div>
+        
+        <div class="button-group" style="margin-top: 2rem;">
+          <button id="saveBtn" class="btn btn-success" disabled>✅ Valider et Continuer</button>
+          <button id="skipBtn" class="btn btn-secondary">⏭️ Passer</button>
+          <button id="endSessionBtn" class="btn btn-danger">🚪 Terminer la session</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Étape 4: Fin -->
+    <div id="step4" class="step">
+      <h2>Session terminée</h2>
+      <div class="intro-text">
+        Merci pour votre participation ! Vos enregistrements ont été sauvegardés 
+        avec succès. Votre contribution est précieuse.
+      </div>
+      <div id="sessionSummary" class="status info">
+        <!-- Résumé de la session -->
+      </div>
+      <div class="button-group">
+        <button class="btn" onclick="resetApp()">Nouvelle session</button>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
