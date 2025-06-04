@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Enregistreur Audio</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 300px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 0.5rem;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .status {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #333;
+    }
+
+    audio {
+      margin-top: 1rem;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Enregistreur Audio</h1>
+    <button id="startBtn">Démarrer</button>
+    <button id="stopBtn" disabled>Arrêter</button>
+    <div class="status" id="status">Appuyez sur "Démarrer"</div>
+    <audio id="audioPlayer" controls style="display: none;"></audio>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
