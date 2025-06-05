@@ -1,0 +1,7 @@
+[build]
+dockerfile = "Dockerfile"
+
+[deploy]
+startCommand = "apache2-foreground"
+healthcheckPath = "/home.html"
+port = 8080

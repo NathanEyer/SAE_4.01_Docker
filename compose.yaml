@@ -4,7 +4,7 @@ services:
   php-apache:
     build: .
     ports:
-      - "8080:80"
+      - "8080:8080"
     volumes:
       - ./recordings:/var/www/html/recordings
     restart: unless-stopped
